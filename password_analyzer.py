@@ -78,15 +78,15 @@ def analyze_password(password):
     # Strength evaluation
     entropy = calculate_entropy(password)
     if entropy < 28:
-        strength = "Very Weak"
+        strength = "🔴 Very Weak"
     elif entropy < 36:
-        strength = "Weak"
+        strength = "🟡 Weak"
     elif entropy < 60:
-        strength = "Moderate"
+        strength = "🟠 Moderate"
     elif entropy < 80:
-        strength = "Strong"
+        strength = "🟢 Strong"
     else:
-        strength = "Very Strong"
+        strength = "🟣 Very Strong"
 
     return {"password": password, "strength": strength, "entropy": entropy, "weaknesses": weaknesses}
 
@@ -96,18 +96,42 @@ def suggest_strong_password():
     alphabet = string.ascii_letters + string.digits + string.punctuation
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
+def main():
+    """Main function to handle user interaction."""
+    print("\n🔐 Welcome to the Password Analyzer 🔐")
+    print("=" * 50)
+
+    while True:
+        print("\n🔹 1. Analyze a Password")
+        print("🔹 2. Generate a Strong Password")
+        print("🔹 3. Exit")
+        choice = input("\nEnter your choice (1-3): ").strip()
+
+        if choice == "1":
+            password = input("\nEnter a password to analyze: ")
+            result = analyze_password(password)
+
+            print("\n🔍 Password Analysis:")
+            print(f"🔹 Strength: {result['strength']} (Entropy: {result['entropy']:.2f} bits)")
+            
+            if result["weaknesses"]:
+                print("\n⚠ Weaknesses detected:")
+                for w in result["weaknesses"]:
+                    print(f"- {w}")
+            else:
+                print("\n✅ No weaknesses detected. Great password!")
+
+        elif choice == "2":
+            print("\n🔑 Suggested Secure Password: " + suggest_strong_password())
+
+        elif choice == "3":
+            print("\n👋 Exiting Password Analyzer. Stay Secure!")
+            break
+
+        else:
+            print("\n❌ Invalid choice. Please enter 1, 2, or 3.")
+
+        print("\n" + "=" * 50)
+
 if __name__ == "__main__":
-    user_password = input("Enter a password to analyze: ")
-    result = analyze_password(user_password)
-
-    print("\n🔍 Password Analysis:")
-    print(f"🔹 Strength: {result['strength']} (Entropy: {result['entropy']:.2f} bits)")
-    
-    if result["weaknesses"]:
-        print("\n⚠ Weaknesses detected:")
-        for w in result["weaknesses"]:
-            print(f"- {w}")
-    else:
-        print("\n✅ No weaknesses detected. Great password!")
-
-    print("\n🔑 Suggested Secure Password: " + suggest_strong_password())
+    main()
